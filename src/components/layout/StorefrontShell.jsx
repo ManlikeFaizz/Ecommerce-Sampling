@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import Container from '../common/Container'
 import { productService } from '../../services/productService'
+import { useStorefront } from '../../context/StorefrontContext'
 
 const primaryProductId = productService.getProducts()?.[0]?.id ?? 'olive-heritage-shirt'
 
@@ -35,6 +36,7 @@ const footerGroups = [
 
 export default function StorefrontShell({ children }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const { cartCount } = useStorefront()
 
   return (
     <div className="app-shell">
@@ -67,8 +69,8 @@ export default function StorefrontShell({ children }) {
             </NavLink>
             <NavLink to="/cart" className="utility-button utility-button--cart" aria-label="Shopping cart">
               Cart
-              <span className="utility-button__count" aria-label="Cart item count">
-                2
+              <span className="utility-button__count" aria-label={`${cartCount} cart items`}>
+                {cartCount}
               </span>
             </NavLink>
             <button

@@ -4,6 +4,7 @@ import { StorefrontProvider } from './context/StorefrontContext'
 import HomePage from './pages/HomePage'
 import ShopPage from './pages/ShopPage'
 import ProductDetailPage from './pages/ProductDetailPage'
+import CartPage from './pages/CartPage'
 
 function App() {
   return (
@@ -13,7 +14,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/shop" element={<ShopPage />} />
           <Route path="/product/:productId" element={<ProductDetailPage />} />
-          <Route path="/cart" element={<PlaceholderPage title="Cart" />} />
+          <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<PlaceholderPage title="Checkout" />} />
           <Route path="/account" element={<PlaceholderPage title="Account" />} />
           <Route path="/login" element={<PlaceholderPage title="Login" />} />
