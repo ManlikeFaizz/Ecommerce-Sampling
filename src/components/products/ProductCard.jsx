@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom'
 
-export default function ProductCard({ product }) {
+import { useStorefront } from '../../context/StorefrontContext'
+
+export default function ProductCard({ product, showAddToBag = false }) {
   const primaryImage = product.images?.[0]
+  const { addToCart, toggleSavedProduct, isSaved } = useStorefront()
 
   return (
     <article className="product-card">
@@ -28,6 +31,16 @@ export default function ProductCard({ product }) {
             View
           </Link>
         </div>
+        {showAddToBag && (
+          <div className="product-card__actions">
+            <button type="button" className="product-card__action" onClick={() => addToCart(product, 'M')}>
+              Add to bag
+            </button>
+            <button type="button" className="product-card__action" onClick={() => toggleSavedProduct(product)} aria-pressed={isSaved(product.id)}>
+                {isSaved(product.id) ? 'Saved' : 'Save'}
+            </button>
+          </div>
+        )}
       </div>
     </article>
   )
