@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom'
 import ProductGrid from '../products/ProductGrid'
-import { productService } from '../../services/productService'
+import { useStorefront } from '../../context/StorefrontContext'
 
 export default function FeaturedProducts() {
-  const products = productService.getProducts()
+  const { products: catalogue, featuredProductIds } = useStorefront()
+  const products = catalogue.filter((product) => featuredProductIds.includes(product.id))
 
   return (
     <section className="home-section">

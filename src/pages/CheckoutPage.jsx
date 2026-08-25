@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useStorefront } from '../context/StorefrontContext'
 
 const currency = new Intl.NumberFormat('en-IN', {
@@ -9,11 +9,22 @@ const currency = new Intl.NumberFormat('en-IN', {
 })
 
 export default function CheckoutPage() {
-  const { cartItems } = useStorefront()
+  const navigate = useNavigate()
+  const { cartItems, isAuthenticated } = useStorefront()
   const [isProcessing, setIsProcessing] = useState(false)
   const [notice, setNotice] = useState('')
 
   const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0)
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login', { replace: true, state: { returnTo: '/checkout' } })
+    }
+  }, [isAuthenticated, navigate])
+
+  if (!isAuthenticated) {
+    return null
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault()

@@ -15,7 +15,7 @@ export default function ProductGallery({ product }) {
   return (
     <div className="product-gallery">
       <div className="product-gallery__primary" aria-label={`${product.name} primary image`}>
-        <img src={images[activeIndex]} alt={product.name} />
+        <img src={images[activeIndex]} alt={product.name} loading="eager" />
       </div>
 
       <div className="product-gallery__thumbs" aria-label="Product image gallery">
@@ -27,7 +27,7 @@ export default function ProductGallery({ product }) {
             onClick={() => setActiveIndex(index)}
             aria-label={`Show image ${index + 1} for ${product.name}`}
           >
-            <img src={image} alt={`${product.name} thumbnail ${index + 1}`} />
+            <img src={image} alt={`${product.name} thumbnail ${index + 1}`} loading="lazy" />
           </button>
         ))}
       </div>

@@ -1,27 +1,28 @@
 import { useMemo, useState } from 'react'
 import ProductGrid from '../components/products/ProductGrid'
-import { productService } from '../services/productService'
+import { useStorefront } from '../context/StorefrontContext'
 
 const categories = ['All', 'Shirts']
 
 export default function ShopPage() {
   const [activeCategory, setActiveCategory] = useState('All')
   const [sortOrder, setSortOrder] = useState('featured')
+  const { products } = useStorefront()
 
   const filteredProducts = useMemo(() => {
-    const products = productService.getProductsByCategory(activeCategory)
+    const availableProducts = activeCategory === 'All' ? products : products.filter((product) => product.category === activeCategory)
 
     switch (sortOrder) {
       case 'price-low':
-        return [...products].sort((a, b) => a.price - b.price)
+        return [...availableProducts].sort((a, b) => a.price - b.price)
       case 'price-high':
-        return [...products].sort((a, b) => b.price - a.price)
+        return [...availableProducts].sort((a, b) => b.price - a.price)
       case 'name':
-        return [...products].sort((a, b) => a.name.localeCompare(b.name))
+        return [...availableProducts].sort((a, b) => a.name.localeCompare(b.name))
       default:
-        return products
+        return availableProducts
     }
-  }, [activeCategory, sortOrder])
+  }, [activeCategory, sortOrder, products])
 
   return (
     <section className="page-section catalogue-page">

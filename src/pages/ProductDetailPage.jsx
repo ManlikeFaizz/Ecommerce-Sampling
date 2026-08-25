@@ -6,11 +6,12 @@ import ProductGallery from '../components/product/ProductGallery'
 import ProductInformation from '../components/product/ProductInformation'
 import ProductOptions from '../components/product/ProductOptions'
 import RelatedProducts from '../components/product/RelatedProducts'
-import { productService } from '../services/productService'
+import { useStorefront } from '../context/StorefrontContext'
 
 export default function ProductDetailPage() {
   const { productId } = useParams()
-  const product = productService.getProductById(productId)
+  const { products } = useStorefront()
+  const product = products.find((item) => item.id === productId)
   const [selectedSize, setSelectedSize] = useState('M')
 
   if (!product) {

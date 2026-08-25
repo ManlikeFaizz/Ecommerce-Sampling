@@ -36,7 +36,7 @@ const footerGroups = [
 
 export default function StorefrontShell({ children }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const { cartCount } = useStorefront()
+  const { cartCount, isAuthenticated, isAdminAuthenticated } = useStorefront()
 
   return (
     <div className="app-shell">
@@ -64,9 +64,16 @@ export default function StorefrontShell({ children }) {
             <button type="button" className="utility-button" aria-label="Search products">
               Search
             </button>
-            <NavLink to="/account" className="utility-button" aria-label="Account overview">
-              Account
-            </NavLink>
+            {!isAuthenticated && !isAdminAuthenticated && (
+              <NavLink to="/login" className="utility-button" aria-label="Log in">
+                Log in
+              </NavLink>
+            )}
+            {isAdminAuthenticated && (
+              <NavLink to="/admin" className="utility-button" aria-label="Admin back office">
+                Admin
+              </NavLink>
+            )}
             <NavLink to="/cart" className="utility-button utility-button--cart" aria-label="Shopping cart">
               Cart
               <span className="utility-button__count" aria-label={`${cartCount} cart items`}>

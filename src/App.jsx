@@ -7,6 +7,9 @@ import ProductDetailPage from './pages/ProductDetailPage'
 import CartPage from './pages/CartPage'
 import CheckoutPage from './pages/CheckoutPage'
 import AccountPage from './pages/AccountPage'
+import LoginPage from './pages/LoginPage'
+import AdminLoginPage from './pages/AdminLoginPage'
+import AdminPage from './pages/AdminPage'
 
 function App() {
   return (
@@ -19,7 +22,9 @@ function App() {
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/account" element={<AccountPage />} />
-          <Route path="/login" element={<PlaceholderPage title="Login" />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/admin/login" element={<AdminLoginPage />} />
+          <Route path="/admin" element={<AdminPage />} />
           <Route path="*" element={<PlaceholderPage title="Not Found" />} />
         </Routes>
       </AppShell>

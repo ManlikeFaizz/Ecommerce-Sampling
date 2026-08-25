@@ -1,15 +1,46 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
 
 import { useStorefront } from '../../context/StorefrontContext'
 
 export default function ProductCard({ product, showAddToBag = false }) {
   const primaryImage = product.images?.[0]
-  const { addToCart, toggleSavedProduct, isSaved } = useStorefront()
+  const { addToCart, toggleSavedProduct, isSaved, isAuthenticated } = useStorefront()
+  const navigate = useNavigate()
+  const cardRef = useRef(null)
+  const [hasEntered, setHasEntered] = useState(false)
+
+  useEffect(() => {
+    const card = cardRef.current
+    if (!card || !('IntersectionObserver' in window)) {
+      setHasEntered(true)
+      return undefined
+    }
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setHasEntered(true)
+        observer.disconnect()
+      }
+    }, { threshold: 0.08 })
+
+    observer.observe(card)
+    return () => observer.disconnect()
+  }, [])
+
+  const handleSave = () => {
+    if (!isAuthenticated) {
+      navigate('/login')
+      return
+    }
+
+    toggleSavedProduct(product)
+  }
 
   return (
-    <article className="product-card">
+    <article ref={cardRef} className={`product-card ${hasEntered ? 'is-revealed' : ''}`}>
       <Link className="product-card__media" to={`/product/${product.id}`} aria-label={`View ${product.name}`}>
-        {primaryImage && <img className="product-card__image" src={primaryImage} alt={product.name} />}
+        {primaryImage && <img className="product-card__image" src={primaryImage} alt={product.name} loading="lazy" />}
       </Link>
 
       <div className="product-card__body">
@@ -36,7 +67,7 @@ export default function ProductCard({ product, showAddToBag = false }) {
             <button type="button" className="product-card__action" onClick={() => addToCart(product, 'M')}>
               Add to bag
             </button>
-            <button type="button" className="product-card__action" onClick={() => toggleSavedProduct(product)} aria-pressed={isSaved(product.id)}>
+            <button type="button" className="product-card__action" onClick={handleSave} aria-pressed={isSaved(product.id)}>
                 {isSaved(product.id) ? 'Saved' : 'Save'}
             </button>
           </div>

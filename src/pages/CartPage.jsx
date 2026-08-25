@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useStorefront } from '../context/StorefrontContext'
 
 const currency = new Intl.NumberFormat('en-IN', {
@@ -8,8 +8,12 @@ const currency = new Intl.NumberFormat('en-IN', {
 })
 
 export default function CartPage() {
-  const { cartItems, updateCartQuantity, removeFromCart } = useStorefront()
+  const navigate = useNavigate()
+  const { cartItems, updateCartQuantity, removeFromCart, isAuthenticated } = useStorefront()
   const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0)
+  const handleCheckout = () => {
+    navigate(isAuthenticated ? '/checkout' : '/login', isAuthenticated ? undefined : { state: { returnTo: '/checkout' } })
+  }
 
   if (!cartItems.length) {
     return (
@@ -74,7 +78,7 @@ export default function CartPage() {
           <div className="cart-summary__line"><span>Shipping</span><span>Complimentary</span></div>
           <p className="cart-summary__note">Complimentary delivery on every North &amp; Wick order.</p>
           <div className="cart-summary__total"><span>Total</span><strong>{currency.format(subtotal)}</strong></div>
-          <Link className="btn btn--primary cart-summary__cta" to="/checkout">Proceed to checkout</Link>
+          <button className="btn btn--primary cart-summary__cta" type="button" onClick={handleCheckout}>Proceed to checkout</button>
           <Link className="cart-summary__continue" to="/shop">Continue shopping <span aria-hidden="true">→</span></Link>
         </aside>
       </div>

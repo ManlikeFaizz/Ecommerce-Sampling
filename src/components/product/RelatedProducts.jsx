@@ -1,9 +1,9 @@
 import ProductGrid from '../products/ProductGrid'
-import { productService } from '../../services/productService'
+import { useStorefront } from '../../context/StorefrontContext'
 
 export default function RelatedProducts({ currentProductId }) {
-  const products = productService
-    .getProducts()
+  const { products: catalogue } = useStorefront()
+  const products = catalogue
     .filter((product) => product.id !== currentProductId)
     .slice(0, 4)
 

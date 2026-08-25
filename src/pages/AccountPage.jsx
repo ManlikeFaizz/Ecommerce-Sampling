@@ -1,8 +1,7 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import ProductCard from '../components/products/ProductCard'
 import { useStorefront } from '../context/StorefrontContext'
-import { productService } from '../services/productService'
 
 const sections = [
   { id: 'saved', label: 'Saved pieces' },
@@ -12,13 +11,25 @@ const sections = [
 ]
 
 export default function AccountPage() {
-  const { savedItems } = useStorefront()
+  const navigate = useNavigate()
+  const { savedItems, products, currentUser, isAuthenticated, logout } = useStorefront()
   const [activeSection, setActiveSection] = useState('saved')
   const [details, setDetails] = useState({ name: '', email: '', phone: '' })
   const [preferences, setPreferences] = useState({ collectionUpdates: false, orderUpdates: true, size: 'M' })
   const savedProducts = savedItems
-    .map((item) => productService.getProductById(item.id))
+    .map((item) => products.find((product) => product.id === item.id))
     .filter(Boolean)
+
+  if (!isAuthenticated) {
+    return (
+      <section className="page-section account-locked">
+        <p className="eyebrow">Account / Your edit</p>
+        <h1>Your edit is waiting.</h1>
+        <p className="lead">Log in to keep your saved pieces, details, and future orders together.</p>
+        <Link className="btn btn--primary" to="/login">Log in</Link>
+      </section>
+    )
+  }
 
   const updateDetails = (event) => {
     const { name, value } = event.target
@@ -36,6 +47,7 @@ export default function AccountPage() {
         <p className="eyebrow">Account / Your edit</p>
         <h1>Your edit.</h1>
         <p className="account-page__intro">A considered place for the pieces you've saved, the orders you've placed, and the details that make the experience yours.</p>
+        {currentUser?.name && <p className="account-page__user">{currentUser.name}</p>}
       </header>
 
       <div className="account-layout">
@@ -53,6 +65,7 @@ export default function AccountPage() {
               <span aria-hidden="true">→</span>
             </button>
           ))}
+          <button className="account-nav__logout" type="button" onClick={() => { logout(); navigate('/login') }}>Log out</button>
         </nav>
 
         <div className="account-content">

@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useStorefront } from '../../context/StorefrontContext'
 
 export default function ProductActions({ product, selectedSize }) {
-  const { addToCart, toggleSavedProduct, isSaved } = useStorefront()
+  const { addToCart, toggleSavedProduct, isSaved, isAuthenticated } = useStorefront()
+  const navigate = useNavigate()
   const [addState, setAddState] = useState('idle')
   const isProductSaved = product ? isSaved(product.id) : false
 
@@ -33,6 +35,15 @@ export default function ProductActions({ product, selectedSize }) {
     setAddState('adding')
   }
 
+  const handleSave = () => {
+    if (!isAuthenticated) {
+      navigate('/login')
+      return
+    }
+
+    toggleSavedProduct(product)
+  }
+
   const buttonLabel = {
     idle: `Add to bag${selectedSize ? ` · ${selectedSize}` : ''}`,
     adding: 'Adding...',
@@ -53,7 +64,7 @@ export default function ProductActions({ product, selectedSize }) {
       <button
         type="button"
         className={`btn btn--secondary ${isProductSaved ? 'is-active' : ''}`}
-        onClick={() => toggleSavedProduct(product)}
+        onClick={handleSave}
         aria-pressed={isProductSaved}
       >
         {isProductSaved ? 'Saved for later' : 'Save for later'}
